@@ -12,35 +12,24 @@ const ExcelImportExport = () => {
         setFileName(file.name);
         const data = await file.arrayBuffer();
         const wb = read(data, {cellText:false, cellDates: true});
-
         const ws = wb.Sheets[wb.SheetNames[0]];
-        const jsonData = utils.sheet_to_json(ws, {dateNF: 'dd"."mm"."yyyy', raw: false});
-
-        // const sortingDate = jsonData.sort((a, b) =>
-        //     moment(b['Дата регистрации'], 'DD.MM.YYYY').diff(moment(a['Дата регистрации'], 'DD.MM.YYYY'))
-        // );
-
-        // const sortingDate = (jsonData) => {
-        //     jsonData.map((item, index) => {
-        //         console.log(item['Дата регистрации']);
-        //     })
-
-        // }
-
-        // sortingDate(jsonData);
-
+        const jsonData = utils.sheet_to_json(ws, { raw: false});
+        // const jsonData = utils.sheet_to_json(ws, {dateNF: 'dd"/"mm"/"yyyy', raw: false});
         setDataTable(jsonData);
-        // console.log(jsonData);
-        // jsonData.sort((a, b) => new Date(a['Дата регистрации']) – new Date(b['Дата регистрации']));
-        // jsonData.sort((a, b) => new Date(a['Дата регистрации']).getTime() - new Date(b['Дата регистрации']).getTime());
+        jsonData.sort((a, b) => new Date(a['Дата регистрации']) - new Date(b['Дата регистрации']));
         console.log(jsonData);
-        // console.log(sortingDate);
     }
 
-    const sorting = (data) => {
-        // const t = data.sort((a, b) => (new Date(a['Дата регистрации'])) – (new Date(b['Дата регистрации'])));
-        // console.log(t);/
-        // return t;
+    const sorting = () => {
+        const mas = [];
+        dataTable.map((item, index) => {
+            let a = {date: new Date(item['Дата регистрации'] ) }
+            mas.push(a);
+        })
+        console.log(mas);
+        console.log(dataTable);
+        mas.sort((a, b) => (a.date) - (b.date));
+        console.log(mas);
     } 
 
     function handleExport() {
@@ -104,7 +93,7 @@ const ExcelImportExport = () => {
                 <button type='button' onClick={handleExport}>Сформировать отчет за прошедшую неделю</button>
             </div>
             <div>
-                <button type='button' onClick={sorting(dataTable)}>Отсортировать</button>
+                <button type='button' onClick={sorting}>Отсортировать</button>
             </div>
         </>
     )
